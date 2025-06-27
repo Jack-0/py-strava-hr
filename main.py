@@ -45,11 +45,31 @@ def get_athlete(access_token):
 
 
 def get_activities(access_token):
-    r = requests.get("https://www.strava.com/api/v3/athlete/activities", headers={
-        'Authorization': f"Bearer {access_token}"
-    }, params={'per_page': 100})
-    r.raise_for_status()
-    return r.json()
+    all_activities = []
+    page = 1
+    per_page = 100
+
+    while True:
+        r = requests.get(
+            "https://www.strava.com/api/v3/athlete/activities",
+            headers={'Authorization': f"Bearer {access_token}"},
+            params={'per_page': per_page, 'page': page}
+        )
+        r.raise_for_status()
+        activities = r.json()
+
+        if not activities:
+            break
+
+        all_activities.extend(activities)
+
+        # last page
+        if len(activities) < per_page:
+            break
+
+        page += 1
+
+    return all_activities
 
 
 def main():
@@ -76,7 +96,7 @@ def filter_and_sort_by_heartrate(items):
         key=lambda x: x["max_heartrate"],
         reverse=True
     )
-    for i in range(3):
+    for i in range(5):
         entry = res[i]
         print(f"❤️ Max HR: {
               entry['max_heartrate']}, URL: https://www.strava.com/activities/{entry['id']}")

@@ -1,6 +1,7 @@
 # Strava Max HR
 
-A really simple python app to get you max HR from last 100 activities
+A really simple python app to get you max HR from all activities (lists the top 5).
+
 
 ## Setup and running
 
